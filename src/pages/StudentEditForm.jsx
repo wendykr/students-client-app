@@ -3,11 +3,13 @@ import { useState, useEffect, useContext } from "react"
 import { EnumsContext } from "../context/EnumsContext";
 import { translateEnums } from "../helper/translateEnums";
 import { IntlContext } from "../context/IntlContext";
+import { useTranslate } from "../hooks/useTranslate";
 
 export const StudentEditForm = () => {
   const { gender, house, year } = useContext(EnumsContext)
   const { locale } = useContext(IntlContext);
   const { id } = useParams();
+  const t = useTranslate();
 
   const [student, setStudent] = useState({
     firstName: "",
@@ -18,18 +20,6 @@ export const StudentEditForm = () => {
   });
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState("")
-
-  const FormattedMessage = ({ id }) => {
-    const { messages, locale } = useContext(IntlContext);
-
-    const translatedThingy = messages?.[locale]?.[id];
-
-    if (!translatedThingy) {
-      return "Unknown translation";
-    }
-
-    return translatedThingy;
-  };
 
   useEffect(() => {
     const getStudent = async () => {
@@ -44,37 +34,21 @@ export const StudentEditForm = () => {
     getStudent()
   }, [id])
 
-  const handleFirstName = (e) => {
-    setStudent({...student, firstName: e.target.value });
-  };
-
-  const handleLastName = (e) => {
-    setStudent({...student, lastName: e.target.value});
-  };
-
-  const handleGender = (e) => {
-    setStudent({...student, gender: e.target.value});
-  };
-
-  const handleHouse = (e) => {
-    setStudent({...student, house: e.target.value});
-  };
-
-  const handleYear = (e) => {
+  const handleStudentChange = (e, field) => {
     setStudent({
       ...student,
-      year: e.target.value,
+      [field]: e.target.value,
     });
   };
 
-const handleEdit = async () => {
-  const body = {
-    firstName: student.firstName,
-    lastName: student.lastName,
-    gender: student.gender,
-    house: student.house,
-    year: student.year,
-  };
+  const handleEdit = async () => {
+    const body = {
+      firstName: student.firstName,
+      lastName: student.lastName,
+      gender: student.gender,
+      house: student.house,
+      year: student.year,
+    };
 
   try {
     const response = await fetch(
@@ -92,7 +66,7 @@ const handleEdit = async () => {
       throw new Error("Editace se nepovedla");
     }
 
-    setMessage(<FormattedMessage id="messageSuccesEdit" />);
+    setMessage(t("messageSuccesEdit"));
   } catch (error) {
     setMessage("Nastala chyba při úpravě ❌");
     console.error(error);
@@ -101,15 +75,13 @@ const handleEdit = async () => {
 
   if (loading) return (
     <p>
-      <FormattedMessage id="loading" />
+      {t("loading")}
     </p>
   );
 
   return (
     <>
-      <h1>
-        <FormattedMessage id="titleEdit" />
-      </h1>
+      <h1>{t("titleEdit")}</h1>
       {message && <p>{message}</p>}
       <form>
         <table className="table table-light table-bordered">
@@ -117,7 +89,7 @@ const handleEdit = async () => {
             <tr>
               <th>
                 <label htmlFor="first-name" className="form-label">
-                  <FormattedMessage id="thFirstName" />
+                  {t("thFirstName")}
                 </label>
               </th>
               <td>
@@ -126,7 +98,7 @@ const handleEdit = async () => {
                   name="first-name"
                   className="form-control"
                   value={student.firstName}
-                  onChange={handleFirstName}
+                  onChange={(e) => handleStudentChange(e, "firstName")}
                   required
                 />
               </td>
@@ -134,7 +106,7 @@ const handleEdit = async () => {
             <tr>
               <th>
                 <label htmlFor="last-name" className="form-label">
-                  <FormattedMessage id="thLastName" />
+                  {t("thLastName")}
                 </label>
               </th>
               <td>
@@ -143,15 +115,13 @@ const handleEdit = async () => {
                   name="last-name"
                   className="form-control"
                   value={student.lastName}
-                  onChange={handleLastName}
+                  onChange={(e) => handleStudentChange(e, "lastName")}
                   required
                 />
               </td>
             </tr>
             <tr>
-              <th>
-                <FormattedMessage id="thGender" />
-              </th>
+              <th>{t("thGender")}</th>
               <td>
                 <label className="form-check-label">
                   <input
@@ -161,7 +131,7 @@ const handleEdit = async () => {
                     value="M"
                     required
                     checked={student.gender === "M"}
-                    onChange={handleGender}
+                    onChange={(e) => handleStudentChange(e, "gender")}
                   />{" "}
                   {translateEnums("M", gender, locale)}
                 </label>
@@ -173,7 +143,7 @@ const handleEdit = async () => {
                     value="F"
                     required
                     checked={student.gender === "F"}
-                    onChange={handleGender}
+                    onChange={(e) => handleStudentChange(e, "gender")}
                   />{" "}
                   {translateEnums("F", gender, locale)}
                 </label>
@@ -182,7 +152,7 @@ const handleEdit = async () => {
             <tr>
               <th>
                 <label htmlFor="house" className="form-label">
-                  <FormattedMessage id="thHouse" />
+                  {t("thHouse")}
                 </label>
               </th>
               <td>
@@ -191,7 +161,7 @@ const handleEdit = async () => {
                   name="house"
                   className="form-select"
                   required
-                  onChange={handleHouse}
+                  onChange={(e) => handleStudentChange(e, "house")}
                   value={student.house}
                 >
                   {house.map((item) => (
@@ -205,7 +175,7 @@ const handleEdit = async () => {
             <tr>
               <th>
                 <label htmlFor="year" className="form-label">
-                  <FormattedMessage id="thYear" />
+                  {t("thYear")}
                 </label>
               </th>
               <td>
@@ -214,7 +184,7 @@ const handleEdit = async () => {
                   name="year"
                   className="form-select"
                   required
-                  onChange={handleYear}
+                  onChange={(e) => handleStudentChange(e, "year")}
                   value={student.year}
                 >
                   {year.map((item) => (
@@ -232,7 +202,7 @@ const handleEdit = async () => {
                   className="btn btn-primary"
                   onClick={handleEdit}
                 >
-                  <FormattedMessage id="buttonSave" />
+                  {t("buttonSave")}
                 </button>
               </td>
             </tr>
@@ -240,9 +210,7 @@ const handleEdit = async () => {
         </table>
       </form>
       <nav>
-        <Link to="/">
-          <FormattedMessage id="buttonBack" />
-        </Link>
+        <Link to="/">{t("buttonBack")}</Link>
       </nav>
     </>
   );

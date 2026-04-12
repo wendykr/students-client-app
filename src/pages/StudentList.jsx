@@ -1,23 +1,13 @@
 import { Link } from "react-router-dom";
 import { StudentListRow } from "../components/StudentListRow";
-import { useState, useEffect, useContext } from "react"
-import { IntlContext } from "../context/IntlContext";
+import { useState, useEffect } from "react"
+import { useTranslate } from "../hooks/useTranslate";
 
 export const StudentList = () => {
   const [studentList, setStudentList] = useState([])
   const [loading, setLoading] = useState(true)
   
-  const FormattedMessage = ({ id }) => {
-    const { messages, locale } = useContext(IntlContext);
-
-    const translatedThingy = messages?.[locale]?.[id];
-
-    if (!translatedThingy) {
-      return "Unknown translation";
-    }
-
-    return translatedThingy;
-  };
+  const t = useTranslate();
 
   useEffect(() => {
     const getStudents = async () => {
@@ -32,32 +22,28 @@ export const StudentList = () => {
     getStudents()
   }, [])
 
-  if (loading) return (
-    <p>
-      <FormattedMessage id="loading" />
-    </p>
-  );
+  if (loading) return <p>{t("loading")}</p>;
 
   return (
     <>
       <h1>
-        <FormattedMessage id="titleList" />
+        {t("titleList")}
       </h1>
       {}
       <table className="table table-light table-striped table-bordered">
         <thead>
           <tr>
             <th>
-              <FormattedMessage id="thName" />
+              {t("thName")}
             </th>
             <th>
-              <FormattedMessage id="thGender" />
+              {t("thGender")}
             </th>
             <th>
-              <FormattedMessage id="thHouse" />
+              {t("thHouse")}
             </th>
             <th>
-              <FormattedMessage id="thYear" />
+              {t("thYear")}
             </th>
             <th></th>
           </tr>
@@ -70,7 +56,7 @@ export const StudentList = () => {
       </table>
       <nav>
         <Link to="/students/create">
-          <FormattedMessage id="buttonNew" />
+          {t("buttonNew")}
         </Link>
       </nav>
     </>

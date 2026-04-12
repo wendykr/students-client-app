@@ -3,10 +3,13 @@ import { useState, useContext } from "react"
 import { EnumsContext } from "../context/EnumsContext";
 import { translateEnums } from "../helper/translateEnums";
 import { IntlContext } from "../context/IntlContext";
+import { useTranslate } from "../hooks/useTranslate";
 
 export const StudentCreateForm = () => {
   const { house: houseEnum, gender: genderEnum, year: yearEnum } = useContext(EnumsContext);
   const { locale } = useContext(IntlContext);
+  const t = useTranslate();
+
   const [student, setStudent] = useState({
     firstName: "",
     lastName: "",
@@ -15,18 +18,6 @@ export const StudentCreateForm = () => {
     year: "",
   });
   const [message, setMessage] = useState("")
-
-  const FormattedMessage = ({ id }) => {
-    const { messages, locale } = useContext(IntlContext);
-
-    const translatedThingy = messages?.[locale]?.[id];
-
-    if (!translatedThingy) {
-      return "Unknown translation";
-    }
-
-    return translatedThingy;
-  };
 
   const handleStudentChange = (e, field) => {
     setStudent({
@@ -43,7 +34,7 @@ export const StudentCreateForm = () => {
       !student.house ||
       !student.year
     ) {
-      setMessage(<FormattedMessage id="messageEmptyField" />);
+      setMessage(t("messageEmptyField"));
       return;
     }
 
@@ -67,7 +58,7 @@ export const StudentCreateForm = () => {
         throw new Error("Přidání se nepovedlo");
       }
 
-      setMessage(<FormattedMessage id="messageSuccesCreate" />);
+      setMessage(t("messageSuccesCreate"));
     } catch (error) {
       setMessage("Nastala chyba při přidání ❌");
       console.error(error);
@@ -77,7 +68,7 @@ export const StudentCreateForm = () => {
   return (
     <>
       <h1>
-        <FormattedMessage id="titleCreate" />
+        {t("titleCreate")}
       </h1>
       {message && <p>{message}</p>}
       <form>
@@ -86,7 +77,7 @@ export const StudentCreateForm = () => {
             <tr>
               <th>
                 <label htmlFor="first-name" className="form-label">
-                  <FormattedMessage id="thFirstName" />
+                  {t("thFirstName")}
                 </label>
               </th>
               <td>
@@ -103,7 +94,7 @@ export const StudentCreateForm = () => {
             <tr>
               <th>
                 <label htmlFor="last-name" className="form-label">
-                  <FormattedMessage id="thLastName" />
+                  {t("thLastName")}
                 </label>
               </th>
               <td>
@@ -119,7 +110,7 @@ export const StudentCreateForm = () => {
             </tr>
             <tr>
               <th>
-                <FormattedMessage id="thGender" />
+                {t("thGender")}
               </th>
               <td>
                 <label className="form-check-label">
@@ -151,7 +142,7 @@ export const StudentCreateForm = () => {
             <tr>
               <th>
                 <label htmlFor="house" className="form-label">
-                  <FormattedMessage id="thHouse" />
+                  {t("thHouse")}
                 </label>
               </th>
               <td>
@@ -175,7 +166,7 @@ export const StudentCreateForm = () => {
             <tr>
               <th>
                 <label htmlFor="year" className="form-label">
-                  <FormattedMessage id="thYear" />
+                  {t("thYear")}
                 </label>
               </th>
               <td>
@@ -203,7 +194,7 @@ export const StudentCreateForm = () => {
                   className="btn btn-primary"
                   onClick={handleCreate}
                 >
-                  <FormattedMessage id="buttonSave" />
+                  {t("buttonSave")}
                 </button>
               </td>
             </tr>
@@ -212,7 +203,7 @@ export const StudentCreateForm = () => {
       </form>
       <nav>
         <Link to="/">
-          <FormattedMessage id="buttonBack" />
+          {t("buttonBack")}
         </Link>
       </nav>
     </>
