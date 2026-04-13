@@ -26,7 +26,8 @@ export const StudentCreateForm = () => {
     });
   };
 
-  const handleCreate = async () => {
+  const handleCreate = async (e) => {
+    e.preventDefault();
     if (
       !student.firstName?.trim() ||
       !student.lastName?.trim() ||
@@ -67,11 +68,9 @@ export const StudentCreateForm = () => {
 
   return (
     <>
-      <h1>
-        {t("titleCreate")}
-      </h1>
+      <h1>{t("titleCreate")}</h1>
       {message && <p>{message}</p>}
-      <form>
+      <form onSubmit={handleCreate}>
         <table className="table table-light table-bordered">
           <tbody>
             <tr>
@@ -109,9 +108,7 @@ export const StudentCreateForm = () => {
               </td>
             </tr>
             <tr>
-              <th>
-                {t("thGender")}
-              </th>
+              <th>{t("thGender")}</th>
               <td>
                 <label className="form-check-label">
                   <input
@@ -190,9 +187,8 @@ export const StudentCreateForm = () => {
             <tr>
               <td colSpan="2">
                 <button
-                  type="button"
+                  type="submit"
                   className="btn btn-primary"
-                  onClick={handleCreate}
                 >
                   {t("buttonSave")}
                 </button>
@@ -202,9 +198,7 @@ export const StudentCreateForm = () => {
         </table>
       </form>
       <nav>
-        <Link to="/">
-          {t("buttonBack")}
-        </Link>
+        <Link to="/">{t("buttonBack")}</Link>
       </nav>
     </>
   );

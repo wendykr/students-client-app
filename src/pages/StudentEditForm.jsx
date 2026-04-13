@@ -41,7 +41,8 @@ export const StudentEditForm = () => {
     });
   };
 
-  const handleEdit = async () => {
+  const handleEdit = async (e) => {
+    e.preventDefault();
     const body = {
       firstName: student.firstName,
       lastName: student.lastName,
@@ -52,7 +53,7 @@ export const StudentEditForm = () => {
 
   try {
     const response = await fetch(
-      `http://localhost:8080/students/${student.id}`,
+      `http://localhost:8080/students/${id}`,
       {
         method: "PUT",
         body: JSON.stringify(body),
@@ -83,7 +84,7 @@ export const StudentEditForm = () => {
     <>
       <h1>{t("titleEdit")}</h1>
       {message && <p>{message}</p>}
-      <form>
+      <form onSubmit={handleEdit}>
         <table className="table table-light table-bordered">
           <tbody>
             <tr>
@@ -198,9 +199,8 @@ export const StudentEditForm = () => {
             <tr>
               <td colSpan="2">
                 <button
-                  type="button"
+                  type="submit"
                   className="btn btn-primary"
-                  onClick={handleEdit}
                 >
                   {t("buttonSave")}
                 </button>
