@@ -6,6 +6,7 @@ import { useTranslate } from "../hooks/useTranslate";
 export const StudentList = () => {
   const [studentList, setStudentList] = useState([])
   const [loading, setLoading] = useState(true)
+  const [message, setMessage] = useState("");
   
   const t = useTranslate();
 
@@ -22,42 +23,41 @@ export const StudentList = () => {
     getStudents()
   }, [])
 
+  const handleDelete = (id) => {
+    fetch(`http://localhost:8080/students/${id}`, {
+      method: "DELETE",
+    });
+    setMessage(t("messageSuccesDel"));
+  };
+
   if (loading) return <p>{t("loading")}</p>;
 
   return (
     <>
-      <h1>
-        {t("titleList")}
-      </h1>
-      {}
+      <h1>{t("titleList")}</h1>
+      {message && <p>{message}</p>}
       <table className="table table-light table-striped table-bordered">
         <thead>
           <tr>
-            <th>
-              {t("thName")}
-            </th>
-            <th>
-              {t("thGender")}
-            </th>
-            <th>
-              {t("thHouse")}
-            </th>
-            <th>
-              {t("thYear")}
-            </th>
+            <th>{t("thName")}</th>
+            <th>{t("thGender")}</th>
+            <th>{t("thHouse")}</th>
+            <th>{t("thYear")}</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           {studentList.map((student) => (
-            <StudentListRow key={student.id} student={student} />
+            <StudentListRow
+              key={student.id}
+              student={student}
+              onDelete={handleDelete}
+            />
           ))}
         </tbody>
       </table>
       <nav>
-        <Link to="/students/create">
-          {t("buttonNew")}
-        </Link>
+        <Link to="/students/create">{t("buttonNew")}</Link>
       </nav>
     </>
   );

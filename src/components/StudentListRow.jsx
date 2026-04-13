@@ -5,17 +5,11 @@ import { translateEnums } from "../helper/translateEnums";
 import { IntlContext } from "../context/IntlContext";
 import { useTranslate } from "../hooks/useTranslate";
 export const StudentListRow = ({
-  student: {id, firstName, lastName, gender, house, year},
+  student: {id, firstName, lastName, gender, house, year}, onDelete,
 }) => {
   const { house: houseEnum, gender: genderEnum, year: yearEnum } = useContext(EnumsContext);
   const { locale } = useContext(IntlContext);
   const t = useTranslate()
-
-  const handleDelete = () => {
-    fetch(`http://localhost:8080/students/${id}`, {
-      method: "DELETE",
-    });
-  }
 
   return (
     <tr>
@@ -32,7 +26,7 @@ export const StudentListRow = ({
         <button
           type="button"
           className="btn btn-danger student-delete"
-          onClick={handleDelete}
+          onClick={() => onDelete(id)}
         >
           {t("buttonDel")}
         </button>

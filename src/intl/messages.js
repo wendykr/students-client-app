@@ -19,6 +19,7 @@ export const messages = {
     messageEmptyField: "Vyplň všechna pole ❗",
     messageSuccesCreate: "Student byl úspěšně přidaný ✅",
     messageSuccesEdit: "Student byl úspěšně upraven ✅",
+    messageSuccesDel: "Student byl úspěšně smazaný ✅",
   },
   en: {
     titleList: "List of students",
@@ -40,5 +41,6 @@ export const messages = {
     messageEmptyField: "Fill in all fields ❗",
     messageSuccesCreate: "The student was successfully added ✅",
     messageSuccesEdit: "The student was successfully updated ✅",
+    messageSuccesDel: "The student was successfully remove ✅",
   },
 };
