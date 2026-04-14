@@ -22,11 +22,14 @@ export const StudentList = () => {
 
     getStudents()
   }, [])
+  
 
-  const handleDelete = (id) => {
-    fetch(`http://localhost:8080/students/${id}`, {
+  const handleDelete = async (id) => {
+    await fetch(`http://localhost:8080/students/${id}`, {
       method: "DELETE",
     });
+
+    setStudentList((prev) => prev.filter((student) => student.id !== id));
     setMessage(t("messageSuccesDel"));
   };
 
