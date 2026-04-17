@@ -10,42 +10,31 @@ export const StudentCreateForm = () => {
   const { locale } = useContext(IntlContext);
   const t = useTranslate();
 
-  const [student, setStudent] = useState({
-    firstName: "",
-    lastName: "",
-    gender: "",
-    house: "",
-    year: "",
-  });
   const [message, setMessage] = useState("")
-
-  const handleStudentChange = (e, field) => {
-    setStudent({
-      ...student,
-      [field]: e.target.value,
-    });
-  };
 
   const handleCreate = async (e) => {
     e.preventDefault();
+
+    const form = e.target;
+
     if (
-      !student.firstName?.trim() ||
-      !student.lastName?.trim() ||
-      !student.gender ||
-      !student.house ||
-      !student.year
+      !form["first-name"].value?.trim() ||
+      !form["last-name"].value?.trim() ||
+      !form["gender"].value ||
+      !form["house"].value ||
+      !form["year"].value
     ) {
       setMessage(t("messageEmptyField"));
       return;
     }
 
     const body = {
-      firstName: student.firstName,
-      lastName: student.lastName,
-      gender: student.gender,
-      house: student.house,
-      year: student.year,
-    }
+      firstName: form["first-name"].value,
+      lastName: form["last-name"].value,
+      gender: form["gender"].value,
+      house: form["house"].value,
+      year: form["year"].value,
+    };
 
     try {
       const response = await fetch("http://localhost:8080/students", {
@@ -85,8 +74,6 @@ export const StudentCreateForm = () => {
                   name="first-name"
                   className="form-control"
                   required
-                  onChange={(e) => handleStudentChange(e, "firstName")}
-                  value={student.firstName}
                 />
               </td>
             </tr>
@@ -102,8 +89,6 @@ export const StudentCreateForm = () => {
                   name="last-name"
                   className="form-control"
                   required
-                  onChange={(e) => handleStudentChange(e, "lastName")}
-                  value={student.lastName}
                 />
               </td>
             </tr>
@@ -117,8 +102,6 @@ export const StudentCreateForm = () => {
                     className="form-check-input"
                     value="M"
                     required
-                    checked={student.gender === "M"}
-                    onChange={(e) => handleStudentChange(e, "gender")}
                   />{" "}
                   {translateEnums("M", genderEnum, locale)}
                 </label>
@@ -129,8 +112,6 @@ export const StudentCreateForm = () => {
                     className="form-check-input"
                     value="F"
                     required
-                    checked={student.gender === "F"}
-                    onChange={(e) => handleStudentChange(e, "gender")}
                   />{" "}
                   {translateEnums("F", genderEnum, locale)}
                 </label>
@@ -148,8 +129,6 @@ export const StudentCreateForm = () => {
                   name="house"
                   className="form-select"
                   required
-                  value={student.house}
-                  onChange={(e) => handleStudentChange(e, "house")}
                 >
                   <option></option>
                   {houseEnum.map((item) => (
@@ -172,8 +151,6 @@ export const StudentCreateForm = () => {
                   name="year"
                   className="form-select"
                   required
-                  value={student.year}
-                  onChange={(e) => handleStudentChange(e, "year")}
                 >
                   <option></option>
                   {yearEnum.map((item) => (

@@ -11,13 +11,7 @@ export const StudentEditForm = () => {
   const { id } = useParams();
   const t = useTranslate();
 
-  const [student, setStudent] = useState({
-    firstName: "",
-    lastName: "",
-    gender: "",
-    house: "",
-    year: "",
-  });
+  const [student, setStudent] = useState(null);
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState("")
 
@@ -34,21 +28,17 @@ export const StudentEditForm = () => {
     getStudent()
   }, [id])
 
-  const handleStudentChange = (e, field) => {
-    setStudent({
-      ...student,
-      [field]: e.target.value,
-    });
-  };
-
   const handleEdit = async (e) => {
     e.preventDefault();
+
+    const form = e.target;
+
     const body = {
-      firstName: student.firstName,
-      lastName: student.lastName,
-      gender: student.gender,
-      house: student.house,
-      year: student.year,
+      firstName: form["first-name"].value,
+      lastName: form["last-name"].value,
+      gender: form["gender"].value,
+      house: form["house"].value,
+      year: form["year"].value,
     };
 
   try {
@@ -98,8 +88,7 @@ export const StudentEditForm = () => {
                   id="first-name"
                   name="first-name"
                   className="form-control"
-                  value={student.firstName}
-                  onChange={(e) => handleStudentChange(e, "firstName")}
+                  defaultValue={student.firstName}
                   required
                 />
               </td>
@@ -115,8 +104,7 @@ export const StudentEditForm = () => {
                   id="last-name"
                   name="last-name"
                   className="form-control"
-                  value={student.lastName}
-                  onChange={(e) => handleStudentChange(e, "lastName")}
+                  defaultValue={student.lastName}
                   required
                 />
               </td>
@@ -131,8 +119,7 @@ export const StudentEditForm = () => {
                     className="form-check-input"
                     value="M"
                     required
-                    checked={student.gender === "M"}
-                    onChange={(e) => handleStudentChange(e, "gender")}
+                    defaultChecked={student.gender === "M"}
                   />{" "}
                   {translateEnums("M", gender, locale)}
                 </label>
@@ -143,8 +130,7 @@ export const StudentEditForm = () => {
                     className="form-check-input"
                     value="F"
                     required
-                    checked={student.gender === "F"}
-                    onChange={(e) => handleStudentChange(e, "gender")}
+                    defaultChecked={student.gender === "F"}
                   />{" "}
                   {translateEnums("F", gender, locale)}
                 </label>
@@ -162,8 +148,7 @@ export const StudentEditForm = () => {
                   name="house"
                   className="form-select"
                   required
-                  onChange={(e) => handleStudentChange(e, "house")}
-                  value={student.house}
+                  defaultValue={student.house}
                 >
                   {house.map((item) => (
                     <option key={item.code} value={item.code}>
@@ -185,8 +170,7 @@ export const StudentEditForm = () => {
                   name="year"
                   className="form-select"
                   required
-                  onChange={(e) => handleStudentChange(e, "year")}
-                  value={student.year}
+                  defaultValue={student.year}
                 >
                   {year.map((item) => (
                     <option key={item.code} value={item.code}>
@@ -198,10 +182,7 @@ export const StudentEditForm = () => {
             </tr>
             <tr>
               <td colSpan="2">
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                >
+                <button type="submit" className="btn btn-primary">
                   {t("buttonSave")}
                 </button>
               </td>
