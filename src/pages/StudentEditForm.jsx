@@ -11,7 +11,7 @@ export const StudentEditForm = () => {
   const { id } = useParams();
   const t = useTranslate();
 
-  const [student, setStudent] = useState(null);
+  const [student, setStudent] = useState();
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState("")
 
@@ -34,11 +34,11 @@ export const StudentEditForm = () => {
     const form = e.target;
 
     const body = {
-      firstName: form["first-name"].value,
-      lastName: form["last-name"].value,
-      gender: form["gender"].value,
-      house: form["house"].value,
-      year: form["year"].value,
+      firstName: form.firstName.value,
+      lastName: form.lastName.value,
+      gender: form.gender.value,
+      house: form.house.value,
+      year: form.year.value,
     };
 
   try {
@@ -79,14 +79,14 @@ export const StudentEditForm = () => {
           <tbody>
             <tr>
               <th>
-                <label htmlFor="first-name" className="form-label">
+                <label htmlFor="firstName" className="form-label">
                   {t("thFirstName")}
                 </label>
               </th>
               <td>
                 <input
-                  id="first-name"
-                  name="first-name"
+                  id="firstName"
+                  name="firstName"
                   className="form-control"
                   defaultValue={student.firstName}
                   required
@@ -95,14 +95,14 @@ export const StudentEditForm = () => {
             </tr>
             <tr>
               <th>
-                <label htmlFor="last-name" className="form-label">
+                <label htmlFor="lastName" className="form-label">
                   {t("thLastName")}
                 </label>
               </th>
               <td>
                 <input
-                  id="last-name"
-                  name="last-name"
+                  id="lastName"
+                  name="lastName"
                   className="form-control"
                   defaultValue={student.lastName}
                   required

@@ -18,22 +18,22 @@ export const StudentCreateForm = () => {
     const form = e.target;
 
     if (
-      !form["first-name"].value?.trim() ||
-      !form["last-name"].value?.trim() ||
-      !form["gender"].value ||
-      !form["house"].value ||
-      !form["year"].value
+      !form.firstName.value?.trim() ||
+      !form.lastName.value?.trim() ||
+      !form.gender.value ||
+      !form.house.value ||
+      !form.year.value
     ) {
       setMessage(t("messageEmptyField"));
       return;
     }
 
     const body = {
-      firstName: form["first-name"].value,
-      lastName: form["last-name"].value,
-      gender: form["gender"].value,
-      house: form["house"].value,
-      year: form["year"].value,
+      firstName: form.firstName.value,
+      lastName: form.lastName.value,
+      gender: form.gender.value,
+      house: form.house.value,
+      year: form.year.value,
     };
 
     try {
@@ -64,14 +64,14 @@ export const StudentCreateForm = () => {
           <tbody>
             <tr>
               <th>
-                <label htmlFor="first-name" className="form-label">
+                <label htmlFor="firstName" className="form-label">
                   {t("thFirstName")}
                 </label>
               </th>
               <td>
                 <input
-                  id="first-name"
-                  name="first-name"
+                  id="firstName"
+                  name="firstName"
                   className="form-control"
                   required
                 />
@@ -79,14 +79,14 @@ export const StudentCreateForm = () => {
             </tr>
             <tr>
               <th>
-                <label htmlFor="last-name" className="form-label">
+                <label htmlFor="lastName" className="form-label">
                   {t("thLastName")}
                 </label>
               </th>
               <td>
                 <input
-                  id="last-name"
-                  name="last-name"
+                  id="lastName"
+                  name="lastName"
                   className="form-control"
                   required
                 />
