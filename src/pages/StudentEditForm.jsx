@@ -31,14 +31,20 @@ export const StudentEditForm = () => {
   const handleEdit = async (e) => {
     e.preventDefault();
 
-    const form = e.target;
+    const form = e.currentTarget;
+
+    const firstName = form.firstName.value;
+    const lastName = form.lastName.value;
+    const gender = form.gender.value;
+    const house = form.house.value;
+    const year = form.year.value;
 
     const body = {
-      firstName: form.firstName.value,
-      lastName: form.lastName.value,
-      gender: form.gender.value,
-      house: form.house.value,
-      year: form.year.value,
+      firstName,
+      lastName,
+      gender,
+      house,
+      year,
     };
 
   try {
