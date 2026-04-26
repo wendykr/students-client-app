@@ -2,13 +2,34 @@ import { Link } from "react-router-dom"
 import { useState } from "react"
 import { useTranslate } from "../hooks/useTranslate";
 import { StudentForm } from "../components/StudentForm";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 
 export const StudentCreateForm = () => {
   const t = useTranslate();
 
+  const queryClient = useQueryClient();
+
   const [message, setMessage] = useState("")
 
-  const handleCreate = async (e) => {
+  const createStudent = (student) =>
+    fetch("http://localhost:8080/students", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(student),
+    });
+
+  const addStudentMutation = useMutation({
+    mutationFn: createStudent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["studentsList"] });
+      setMessage(t("messageSuccesCreate"));
+    },
+    onError: () => {
+      setMessage("Nastala chyba při přidání ❌");
+    },
+  });
+
+  const handleCreate = (e) => {
     e.preventDefault();
 
     const form = e.currentTarget;
@@ -38,23 +59,7 @@ export const StudentCreateForm = () => {
       year,
     };
 
-    try {
-      const response = await fetch("http://localhost:8080/students", {
-        method: "POST",
-        body: JSON.stringify(body),
-        headers: {
-          "content-type": "application/json",
-        },
-      });
-      if (!response.ok) {
-        throw new Error("Přidání se nepovedlo");
-      }
-
-      setMessage(t("messageSuccesCreate"));
-    } catch (error) {
-      setMessage("Nastala chyba při přidání ❌");
-      console.error(error);
-    }
+    addStudentMutation.mutate(body);
   }
 
   return (
