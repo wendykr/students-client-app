@@ -2,12 +2,18 @@ import { Link } from "react-router-dom";
 import { StudentListRow } from "../components/StudentListRow";
 import { useState } from "react"
 import { useTranslate } from "../hooks/useTranslate";
-import { useQuery } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 export const StudentList = () => {
   const [message, setMessage] = useState("");
 
   const t = useTranslate();
+
+  const queryClient = useQueryClient();
 
   const getStudents = async () => {
     const response = await fetch("http://localhost:8080/students");
@@ -21,14 +27,16 @@ export const StudentList = () => {
     queryFn: getStudents,
   });
 
-  // const handleDelete = async (id) => {
-  //   await fetch(`http://localhost:8080/students/${id}`, {
-  //     method: "DELETE",
-  //   });
+  const deleteStudent = (id) => fetch(`http://localhost:8080/students/${id}`, { method: "DELETE" });
 
-  //   setStudentList((prev) => prev.filter((student) => student.id !== id));
-  //   setMessage(t("messageSuccesDel"));
-  // };
+  const deleteMutation = useMutation({
+    queryKey: ["studentsList"],
+    mutationFn: deleteStudent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["studentsList"] });
+      setMessage(t("messageSuccesDel"));
+    },
+  });
 
   if (isPending) return <p>{t("loading")}</p>;
 
@@ -55,7 +63,7 @@ export const StudentList = () => {
             <StudentListRow
               key={student.id}
               student={student}
-              // onDelete={handleDelete}
+              onDelete={deleteMutation.mutate}
             />
           ))}
         </tbody>
