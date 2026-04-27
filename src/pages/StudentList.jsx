@@ -1,23 +1,14 @@
 import { Link } from "react-router-dom";
 import { StudentListRow } from "../components/StudentListRow";
-import { useState, useEffect, useContext } from "react"
-import { IntlContext } from "../context/IntlContext";
+import { useState, useEffect } from "react"
+import { useTranslate } from "../hooks/useTranslate";
 
 export const StudentList = () => {
   const [studentList, setStudentList] = useState([])
   const [loading, setLoading] = useState(true)
+  const [message, setMessage] = useState("");
   
-  const FormattedMessage = ({ id }) => {
-    const { messages, locale } = useContext(IntlContext);
-
-    const translatedThingy = messages?.[locale]?.[id];
-
-    if (!translatedThingy) {
-      return "Unknown translation";
-    }
-
-    return translatedThingy;
-  };
+  const t = useTranslate();
 
   useEffect(() => {
     const getStudents = async () => {
@@ -31,47 +22,45 @@ export const StudentList = () => {
 
     getStudents()
   }, [])
+  
 
-  if (loading) return (
-    <p>
-      <FormattedMessage id="loading" />
-    </p>
-  );
+  const handleDelete = async (id) => {
+    await fetch(`http://localhost:8080/students/${id}`, {
+      method: "DELETE",
+    });
+
+    setStudentList((prev) => prev.filter((student) => student.id !== id));
+    setMessage(t("messageSuccesDel"));
+  };
+
+  if (loading) return <p>{t("loading")}</p>;
 
   return (
     <>
-      <h1>
-        <FormattedMessage id="titleList" />
-      </h1>
-      {}
+      <h1>{t("titleList")}</h1>
+      {message && <p>{message}</p>}
       <table className="table table-light table-striped table-bordered">
         <thead>
           <tr>
-            <th>
-              <FormattedMessage id="thName" />
-            </th>
-            <th>
-              <FormattedMessage id="thGender" />
-            </th>
-            <th>
-              <FormattedMessage id="thHouse" />
-            </th>
-            <th>
-              <FormattedMessage id="thYear" />
-            </th>
+            <th>{t("thName")}</th>
+            <th>{t("thGender")}</th>
+            <th>{t("thHouse")}</th>
+            <th>{t("thYear")}</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
           {studentList.map((student) => (
-            <StudentListRow key={student.id} student={student} />
+            <StudentListRow
+              key={student.id}
+              student={student}
+              onDelete={handleDelete}
+            />
           ))}
         </tbody>
       </table>
       <nav>
-        <Link to="/students/create">
-          <FormattedMessage id="buttonNew" />
-        </Link>
+        <Link to="/students/create">{t("buttonNew")}</Link>
       </nav>
     </>
   );
