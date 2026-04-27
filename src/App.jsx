@@ -4,18 +4,17 @@ import { StudentList } from "./pages/StudentList";
 import { StudentDetail } from "./pages/StudentDetail";
 import { StudentEditForm } from "./pages/StudentEditForm";
 import { StudentCreateForm } from "./pages/StudentCreateForm";
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 import { EnumsContext } from "./context/EnumsContext";
 import { IntlProvider } from "./context/IntlContext";
 import { SwitcherLanguage } from "./components/SwitcherLanguage";
 import { messages } from "./intl/messages";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 function App() {
-
-  const [gender, setGender] = useState([])
+  const [gender, setGender] = useState([]);
   const [house, setHouse] = useState([]);
   const [year, setYear] = useState([]);
   const [locale, setLocale] = useState("cs");
@@ -46,9 +45,7 @@ function App() {
 
   useEffect(() => {
     const getYears = async () => {
-      const response = await fetch(
-        "http://localhost:8080/codebooks/YEAR",
-      );
+      const response = await fetch("http://localhost:8080/codebooks/YEAR");
 
       const data = await response.json();
 

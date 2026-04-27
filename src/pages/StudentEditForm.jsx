@@ -1,29 +1,25 @@
 import { useParams, Link } from "react-router-dom";
-import { useState } from "react"
+import { useState } from "react";
 import { useTranslate } from "../hooks/useTranslate";
 import { StudentForm } from "../components/StudentForm";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const StudentEditForm = () => {
   const { id } = useParams();
   const t = useTranslate();
 
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-  const [message, setMessage] = useState("")
+  const [message, setMessage] = useState("");
 
   const getStudent = async () => {
     const response = await fetch(`http://localhost:8080/students/${id}`);
     if (!response.ok) throw new Error("Nepodařilo se načíst studenta");
-    const data = await response.json()
-    
+    const data = await response.json();
+
     return data;
-    }
-    
+  };
+
   const { data, isPending } = useQuery({
     queryKey: ["student", id],
     queryFn: getStudent,
@@ -42,7 +38,7 @@ export const StudentEditForm = () => {
     mutationKey: ["student", id],
     mutationFn: editStudent,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey:["student", id] });
+      queryClient.invalidateQueries({ queryKey: ["student", id] });
       setMessage(t("messageSuccesEdit"));
     },
     onError: () => {
@@ -72,11 +68,7 @@ export const StudentEditForm = () => {
     editStudentMutation.mutate({ id, student: body });
   };
 
-  if (isPending) return (
-    <p>
-      {t("loading")}
-    </p>
-  );
+  if (isPending) return <p>{t("loading")}</p>;
 
   return (
     <>

@@ -1,12 +1,8 @@
 import { Link } from "react-router-dom";
 import { StudentListRow } from "../components/StudentListRow";
-import { useState } from "react"
+import { useState } from "react";
 import { useTranslate } from "../hooks/useTranslate";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const StudentList = () => {
   const [message, setMessage] = useState("");
@@ -27,7 +23,8 @@ export const StudentList = () => {
     queryFn: getStudents,
   });
 
-  const deleteStudent = (id) => fetch(`http://localhost:8080/students/${id}`, { method: "DELETE" });
+  const deleteStudent = (id) =>
+    fetch(`http://localhost:8080/students/${id}`, { method: "DELETE" });
 
   const deleteMutation = useMutation({
     queryKey: ["studentsList"],

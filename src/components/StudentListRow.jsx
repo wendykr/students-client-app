@@ -5,11 +5,16 @@ import { translateEnums } from "../helper/translateEnums";
 import { IntlContext } from "../context/IntlContext";
 import { useTranslate } from "../hooks/useTranslate";
 export const StudentListRow = ({
-  student: {id, firstName, lastName, gender, house, year}, onDelete,
+  student: { id, firstName, lastName, gender, house, year },
+  onDelete,
 }) => {
-  const { house: houseEnum, gender: genderEnum, year: yearEnum } = useContext(EnumsContext);
+  const {
+    house: houseEnum,
+    gender: genderEnum,
+    year: yearEnum,
+  } = useContext(EnumsContext);
   const { locale } = useContext(IntlContext);
-  const t = useTranslate()
+  const t = useTranslate();
 
   return (
     <tr>
