@@ -1,39 +1,48 @@
 import { Link } from "react-router-dom";
 import { StudentListRow } from "../components/StudentListRow";
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useTranslate } from "../hooks/useTranslate";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 export const StudentList = () => {
-  const [studentList, setStudentList] = useState([])
-  const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState("");
-  
+
   const t = useTranslate();
 
-  useEffect(() => {
-    const getStudents = async () => {
+  const queryClient = useQueryClient();
+
+  const getStudents = async () => {
     const response = await fetch("http://localhost:8080/students");
+    const data = await response.json();
 
-    const data = await response.json()
-
-    setStudentList(data)
-    setLoading(false)
-    }
-
-    getStudents()
-  }, [])
-  
-
-  const handleDelete = async (id) => {
-    await fetch(`http://localhost:8080/students/${id}`, {
-      method: "DELETE",
-    });
-
-    setStudentList((prev) => prev.filter((student) => student.id !== id));
-    setMessage(t("messageSuccesDel"));
+    return data;
   };
 
-  if (loading) return <p>{t("loading")}</p>;
+  const { data, isPending, isError, isFetching } = useQuery({
+    queryKey: ["studentsList"],
+    queryFn: getStudents,
+  });
+
+  const deleteStudent = (id) => fetch(`http://localhost:8080/students/${id}`, { method: "DELETE" });
+
+  const deleteMutation = useMutation({
+    queryKey: ["studentsList"],
+    mutationFn: deleteStudent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["studentsList"] });
+      setMessage(t("messageSuccesDel"));
+    },
+  });
+
+  if (isPending) return <p>{t("loading")}</p>;
+
+  if (isError) return <p>{t("error")}</p>;
+
+  if (isFetching) return <p>{t("fetching")}</p>;
 
   return (
     <>
@@ -50,11 +59,11 @@ export const StudentList = () => {
           </tr>
         </thead>
         <tbody>
-          {studentList.map((student) => (
+          {data.map((student) => (
             <StudentListRow
               key={student.id}
               student={student}
-              onDelete={handleDelete}
+              onDelete={deleteMutation.mutate}
             />
           ))}
         </tbody>

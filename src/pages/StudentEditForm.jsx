@@ -1,28 +1,54 @@
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useTranslate } from "../hooks/useTranslate";
 import { StudentForm } from "../components/StudentForm";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 export const StudentEditForm = () => {
   const { id } = useParams();
   const t = useTranslate();
 
-  const [student, setStudent] = useState();
-  const [loading, setLoading] = useState(true)
+    const queryClient = useQueryClient();
+
   const [message, setMessage] = useState("")
 
-  useEffect(() => {
-    const getStudent = async () => {
+  const getStudent = async () => {
     const response = await fetch(`http://localhost:8080/students/${id}`);
-    
+    if (!response.ok) throw new Error("Nepodařilo se načíst studenta");
     const data = await response.json()
     
-    setStudent(data)
-      setLoading(false);
+    return data;
     }
     
-    getStudent()
-  }, [id])
+  const { data, isPending } = useQuery({
+    queryKey: ["student", id],
+    queryFn: getStudent,
+  });
+
+  const editStudent = async ({ id, student }) => {
+    const response = await fetch(`http://localhost:8080/students/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(student),
+      headers: { "Content-Type": "application/json" },
+    });
+    if (!response.ok) throw new Error("Editace se nepovedla");
+  };
+
+  const editStudentMutation = useMutation({
+    mutationKey: ["student", id],
+    mutationFn: editStudent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey:["student", id] });
+      setMessage(t("messageSuccesEdit"));
+    },
+    onError: () => {
+      setMessage("Nastala chyba při úpravě ❌");
+    },
+  });
 
   const handleEdit = async (e) => {
     e.preventDefault();
@@ -43,30 +69,10 @@ export const StudentEditForm = () => {
       year,
     };
 
-    try {
-      const response = await fetch(
-        `http://localhost:8080/students/${id}`,
-        {
-          method: "PUT",
-          body: JSON.stringify(body),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Editace se nepovedla");
-      }
-
-      setMessage(t("messageSuccesEdit"));
-    } catch (error) {
-      setMessage("Nastala chyba při úpravě ❌");
-      console.error(error);
-    }
+    editStudentMutation.mutate({ id, student: body });
   };
 
-  if (loading) return (
+  if (isPending) return (
     <p>
       {t("loading")}
     </p>
@@ -76,7 +82,7 @@ export const StudentEditForm = () => {
     <>
       <h1>{t("titleEdit")}</h1>
       {message && <p>{message}</p>}
-      <StudentForm defaultValues={student} onSubmit={handleEdit} />
+      <StudentForm defaultValues={data} onSubmit={handleEdit} />
       <nav>
         <Link to="/">{t("buttonBack")}</Link>
       </nav>

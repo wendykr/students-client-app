@@ -9,6 +9,9 @@ import { EnumsContext } from "./context/EnumsContext";
 import { IntlProvider } from "./context/IntlContext";
 import { SwitcherLanguage } from "./components/SwitcherLanguage";
 import { messages } from "./intl/messages";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+const queryClient = new QueryClient()
 
 function App() {
 
@@ -63,15 +66,25 @@ function App() {
   ]);
 
   return (
-    <IntlProvider messages={messages} locale={locale}>
-      <EnumsContext.Provider value={{ gender, house, year }}>
-        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "8px" }}>
-          {locale === "cs" ? "Přepnout na jazyk" : "Switch to language"}:{" "}
-          <SwitcherLanguage locale={locale} setLocale={setLocale} />
-        </div>
-        <RouterProvider router={router}></RouterProvider>
-      </EnumsContext.Provider>
-    </IntlProvider>
+    <QueryClientProvider client={queryClient}>
+      <IntlProvider messages={messages} locale={locale}>
+        <EnumsContext.Provider value={{ gender, house, year }}>
+          <div
+            style={{
+              marginLeft: "auto",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            {locale === "cs" ? "Přepnout na jazyk" : "Switch to language"}:{" "}
+            <SwitcherLanguage locale={locale} setLocale={setLocale} />
+          </div>
+          <RouterProvider router={router}></RouterProvider>
+        </EnumsContext.Provider>
+      </IntlProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 
