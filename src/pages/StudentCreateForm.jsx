@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom"
-import { useState } from "react"
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import { useTranslate } from "../hooks/useTranslate";
 import { StudentForm } from "../components/StudentForm";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
@@ -9,7 +9,7 @@ export const StudentCreateForm = () => {
 
   const queryClient = useQueryClient();
 
-  const [message, setMessage] = useState("")
+  const [message, setMessage] = useState("");
 
   const createStudent = (student) =>
     fetch("http://localhost:8080/students", {
@@ -21,7 +21,7 @@ export const StudentCreateForm = () => {
   const addStudentMutation = useMutation({
     mutationFn: createStudent,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["studentsList"] });
+      queryClient.invalidateQueries({ queryKey: ["students"] });
       setMessage(t("messageSuccesCreate"));
     },
     onError: () => {
@@ -40,13 +40,7 @@ export const StudentCreateForm = () => {
     const house = form.house.value;
     const year = form.year.value;
 
-    if (
-      !firstName?.trim() ||
-      !lastName?.trim() ||
-      !gender ||
-      !house ||
-      !year
-    ) {
+    if (!firstName?.trim() || !lastName?.trim() || !gender || !house || !year) {
       setMessage(t("messageEmptyField"));
       return;
     }
@@ -60,7 +54,7 @@ export const StudentCreateForm = () => {
     };
 
     addStudentMutation.mutate(body);
-  }
+  };
 
   return (
     <>

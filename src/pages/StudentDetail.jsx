@@ -1,37 +1,33 @@
 import { useParams, Link } from "react-router-dom";
-import { useState, useEffect, useContext } from "react"
+import { useState, useEffect, useContext } from "react";
 import { EnumsContext } from "../context/EnumsContext";
 import { translateEnums } from "../helper/translateEnums";
 import { IntlContext } from "../context/IntlContext";
 import { useTranslate } from "../hooks/useTranslate";
 
 export const StudentDetail = () => {
-  const { gender, house, year } = useContext(EnumsContext)
+  const { gender, house, year } = useContext(EnumsContext);
   const { locale } = useContext(IntlContext);
   const { id } = useParams();
-    const t = useTranslate();
+  const t = useTranslate();
 
-  const [student, setStudent] = useState({})
+  const [student, setStudent] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getStudent = async () => {
-    const response = await fetch(`http://localhost:8080/students/${id}`);
-    
-    const data = await response.json()
-    
-    setStudent(data)
-      setLoading(false);
-    }
-    
-    getStudent()
-  }, [id])
+      const response = await fetch(`http://localhost:8080/students/${id}`);
 
-    if (loading) return (
-      <p>
-        {t("loading")}
-      </p>
-    );
+      const data = await response.json();
+
+      setStudent(data);
+      setLoading(false);
+    };
+
+    getStudent();
+  }, [id]);
+
+  if (loading) return <p>{t("loading")}</p>;
 
   return (
     <>

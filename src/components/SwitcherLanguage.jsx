@@ -1,8 +1,7 @@
 import { CzechFlag } from "../icons/CzechFlag";
 import { EnglishFlag } from "../icons/EnglishFlag";
 
-export const SwitcherLanguage = ({locale, setLocale}) => {
-
+export const SwitcherLanguage = ({ locale, setLocale }) => {
   return (
     <button
       style={{ all: "unset", cursor: "pointer" }}
@@ -12,11 +11,7 @@ export const SwitcherLanguage = ({locale, setLocale}) => {
         setLocale(nextLocale);
       }}
     >
-      {locale === "cs" ? (
-        <CzechFlag />
-      ) : (
-        <EnglishFlag />
-      )}
+      {locale === "cs" ? <CzechFlag /> : <EnglishFlag />}
     </button>
   );
-}
+};
